@@ -3,12 +3,13 @@ package com.silmarfnascimento.CEPSystem.service;
 import com.silmarfnascimento.CEPSystem.model.Client;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
-public interface ClientService {
+public interface IClientService {
   List<Client> findAll();
 
-  Client findById(UUID id);
+  Optional<Client> findById(UUID id);
 
   void create(Client client);
 

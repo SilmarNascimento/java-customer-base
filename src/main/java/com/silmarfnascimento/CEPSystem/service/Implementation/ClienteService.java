@@ -7,12 +7,13 @@ import com.silmarfnascimento.CEPSystem.repository.IClientRepository;
 import com.silmarfnascimento.CEPSystem.service.ICEPService;
 import com.silmarfnascimento.CEPSystem.service.IClientService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
-public class IClienteService implements IClientService {
+@Service
+public class ClienteService implements IClientService {
   @Autowired
   private IClientRepository clientRepository;
   @Autowired
@@ -32,7 +33,7 @@ public class IClienteService implements IClientService {
 
   @Override
   public void create(Client client) {
-    salvarClienteComCep(client);
+    saveClientAddress(client);
   }
 
   @Override
@@ -40,7 +41,7 @@ public class IClienteService implements IClientService {
     // Buscar Cliente por ID, caso exista:
     Optional<Client> clientFound = clientRepository.findById(id);
     if (clientFound.isPresent()) {
-      salvarClienteComCep(client);
+      saveClientAddress(client);
     }
   }
 
@@ -49,7 +50,7 @@ public class IClienteService implements IClientService {
     clientRepository.deleteById(id);
   }
 
-  private void salvarClienteComCep(Client client) {
+  private void saveClientAddress(Client client) {
     String cep = client.getAddress().getCep();
     Address address = addressRepository.findById(cep).orElseGet(() -> {
       Address newAddress = cepService.verifyCEP(cep);

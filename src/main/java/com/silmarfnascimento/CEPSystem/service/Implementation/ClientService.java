@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 @Service
-public class ClienteService implements IClientService {
+public class ClientService implements IClientService {
   @Autowired
   private IClientRepository clientRepository;
   @Autowired

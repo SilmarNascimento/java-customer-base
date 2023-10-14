@@ -1,11 +1,10 @@
 package com.silmarfnascimento.CEPSystem.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -14,7 +13,17 @@ public class Client {
   @Id
   @GeneratedValue(generator = "UUID")
   private UUID id;
-  private String nome;
+
+  private String name;
+
+  @Column(unique = true)
+  private String username;
+
+  private String email;
+
   @ManyToOne
-  private Address endereco;
+  private Address address;
+
+  @CreationTimestamp
+  private LocalDateTime createdAt;
 }

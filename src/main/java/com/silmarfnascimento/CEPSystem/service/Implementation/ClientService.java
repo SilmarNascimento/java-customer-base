@@ -6,6 +6,8 @@ import com.silmarfnascimento.CEPSystem.repository.IAddressRepository;
 import com.silmarfnascimento.CEPSystem.repository.IClientRepository;
 import com.silmarfnascimento.CEPSystem.service.ICEPService;
 import com.silmarfnascimento.CEPSystem.service.IClientService;
+import com.silmarfnascimento.CEPSystem.service.ServiceResponse;
+import com.silmarfnascimento.CEPSystem.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,27 +24,32 @@ public class ClientService implements IClientService {
   private ICEPService cepService;
 
   @Override
-  public List<Client> findAll() {
-    return clientRepository.findAll();
+  public ServiceResponse findAll() {
+    List<Client> clients = clientRepository.findAll();
+    return new ServiceResponse("SUCCESS", clients);
   }
 
   @Override
-  public Optional<Client> findById(UUID id) {
-    return clientRepository.findById(id);
+  public ServiceResponse findById(UUID id) {
+    Optional<Client> client = clientRepository.findById(id);
+    return new ServiceResponse("SUCCESS", client);
   }
 
   @Override
-  public void create(Client client) {
-    saveClientAddress(client);
+  public ServiceResponse create(Client client) {
+    Client createdClient = saveClientAddress(client);
+    return new ServiceResponse("CREATED", createdClient);
   }
 
   @Override
-  public void update(UUID id, Client client) {
-    // Buscar Cliente por ID, caso exista:
+  public ServiceResponse update(UUID id, Client client) {
     Optional<Client> clientFound = clientRepository.findById(id);
-    if (clientFound.isPresent()) {
-      saveClientAddress(client);
+    if (clientFound.isEmpty()) {
+      return new ServiceResponse("NOT_FOUND", "Client not Found");
     }
+    Utils.copyNonNullProperties(client, clientFound);
+    Client updatedClient = saveClientAddress(clientFound.get());
+    return new ServiceResponse("SUCCESS", updatedClient);
   }
 
   @Override
@@ -50,7 +57,7 @@ public class ClientService implements IClientService {
     clientRepository.deleteById(id);
   }
 
-  private void saveClientAddress(Client client) {
+  private Client saveClientAddress(Client client) {
     String cep = client.getAddress().getCep();
     Address address = addressRepository.findById(cep).orElseGet(() -> {
       Address newAddress = cepService.verifyCEP(cep);
@@ -59,5 +66,6 @@ public class ClientService implements IClientService {
     });
     client.setAddress(address);
     clientRepository.save(client);
+    return client;
   }
 }

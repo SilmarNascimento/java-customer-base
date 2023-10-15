@@ -7,13 +7,13 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface IClientService {
-  List<Client> findAll();
+  ServiceResponse findAll();
 
-  Optional<Client> findById(UUID id);
+  ServiceResponse findById(UUID id);
 
-  void create(Client client);
+  ServiceResponse create(Client client);
 
-  void update(UUID id, Client client);
+  ServiceResponse update(UUID id, Client client);
 
   void delete(UUID id);
 }

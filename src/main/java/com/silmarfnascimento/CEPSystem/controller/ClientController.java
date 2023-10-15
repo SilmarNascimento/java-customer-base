@@ -2,14 +2,16 @@ package com.silmarfnascimento.CEPSystem.controller;
 
 import com.silmarfnascimento.CEPSystem.model.Client;
 import com.silmarfnascimento.CEPSystem.service.Implementation.ClientService;
+import com.silmarfnascimento.CEPSystem.service.ServiceResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+
+import static com.silmarfnascimento.CEPSystem.utils.mapHTTPStatus.mapHttpStatus;
 
 @RestController
 @RequestMapping("/users")
@@ -19,29 +21,30 @@ public class ClientController {
   private ClientService clientService;
 
   @GetMapping
-  public ResponseEntity<List<Client>> findAll() {
-    return ResponseEntity.status(HttpStatus.OK).body(clientService.findAll());
+  public ResponseEntity<Object> findAll() {
+    ServiceResponse serviceResponse = clientService.findAll();
+    return ResponseEntity.status(mapHttpStatus(serviceResponse.getStatus())).body(serviceResponse.getData());
   }
 
   @GetMapping("/{id}")
   public ResponseEntity<Object> findById(@PathVariable UUID id) {
-    Optional<Client> clientFound = clientService.findById(id);
-    if(clientFound.isPresent()) {
-      return ResponseEntity.status(HttpStatus.OK).body(clientService.findById(id));
+    ServiceResponse serviceResponse = clientService.findById(id);
+    if(serviceResponse.getData() != null) {
+      return ResponseEntity.status(mapHttpStatus(serviceResponse.getStatus())).body(serviceResponse.getData());
     }
-    return ResponseEntity.status(HttpStatus.OK).body("Cliente não encontrado");
+    return ResponseEntity.status(mapHttpStatus(serviceResponse.getStatus())).body("Cliente não encontrado");
   }
 
   @PostMapping
-  public ResponseEntity<Client> create(@RequestBody Client client) {
-    clientService.create(client);
-    return ResponseEntity.status(HttpStatus.CREATED).body(client);
+  public ResponseEntity<Object> create(@RequestBody Client client) {
+    ServiceResponse serviceResponse = clientService.create(client);
+    return ResponseEntity.status(mapHttpStatus(serviceResponse.getStatus())).body(serviceResponse.getData());
   }
 
   @PutMapping("/{id}")
-  public ResponseEntity<Client> atualizar(@PathVariable UUID id, @RequestBody Client cliente) {
-    clientService.update(id, cliente);
-    return ResponseEntity.status(HttpStatus.OK).body(cliente);
+  public ResponseEntity<Object> atualizar(@PathVariable UUID id, @RequestBody Client cliente) {
+    ServiceResponse serviceResponse = clientService.update(id, cliente);
+    return ResponseEntity.status(mapHttpStatus(serviceResponse.getStatus())).body(serviceResponse.getData());
   }
 
   @DeleteMapping("/{id}")

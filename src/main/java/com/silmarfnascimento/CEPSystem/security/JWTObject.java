@@ -8,10 +8,15 @@ import java.util.List;
 
 @Data
 public class JWTObject {
-  private String subject; //nome do usuario
-  private Date createdAt; //data de criação do token
-  private Date expiresAt; // data de expiração do token
-  private List<String> roles; //perfis de acesso
+  private String username;
+  private String password;
+  private Date createdAt;
+  private Date expiresAt;
+  private List<String> roles;
+
+  public void setRoles(List<String> roles) {
+    this.roles = roles;
+  }
 
   public void setRoles(String... roles){
     this.roles = Arrays.asList(roles);

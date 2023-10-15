@@ -61,11 +61,19 @@
 			<version>3.48.0</version> <!-- Use the version compatible with Springdoc -->
 		</dependency>
 
+		<!-- Lombok -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<version>1.18.30</version>
 			<scope>provided</scope>
+		</dependency>
+
+		<!-- JWT -->
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt</artifactId>
+			<version>0.9.1</version> <!-- Replace with the latest version -->
 		</dependency>
 	</dependencies>
 	<dependencyManagement>

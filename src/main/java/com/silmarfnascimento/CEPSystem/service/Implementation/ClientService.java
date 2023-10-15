@@ -1,5 +1,6 @@
 package com.silmarfnascimento.CEPSystem.service.Implementation;
 
+import at.favre.lib.crypto.bcrypt.BCrypt;
 import com.silmarfnascimento.CEPSystem.model.Address;
 import com.silmarfnascimento.CEPSystem.model.Client;
 import com.silmarfnascimento.CEPSystem.repository.IAddressRepository;
@@ -37,6 +38,15 @@ public class ClientService implements IClientService {
 
   @Override
   public ServiceResponse create(Client client) {
+
+    Client userFound = this.clientRepository.findByUsername(client.getUsername());
+    if (userFound != null) {
+      return new ServiceResponse("BAD_REQUEST", "Usuário já existente!");
+    }
+    String passwordHashed = BCrypt.withDefaults()
+        .hashToString(12, client.getPassword().toCharArray());
+    client.setPassword(passwordHashed);
+
     Client createdClient = saveClientAddress(client);
     return new ServiceResponse("CREATED", createdClient);
   }

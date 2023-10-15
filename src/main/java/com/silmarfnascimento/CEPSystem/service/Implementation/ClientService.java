@@ -43,9 +43,7 @@ public class ClientService implements IClientService {
     if (userFound != null) {
       return new ServiceResponse("BAD_REQUEST", "Usuário já existente!");
     }
-    String passwordHashed = BCrypt.withDefaults()
-        .hashToString(12, client.getPassword().toCharArray());
-    client.setPassword(passwordHashed);
+    hashClientPassword(client);
 
     Client createdClient = saveClientAddress(client);
     return new ServiceResponse("CREATED", createdClient);
@@ -57,6 +55,12 @@ public class ClientService implements IClientService {
     if (clientFound.isEmpty()) {
       return new ServiceResponse("NOT_FOUND", "Client not Found");
     }
+
+    var passwordVerify = BCrypt.verifyer().verify(client.getPassword().toCharArray(), clientFound.get().getPassword());
+    if(!passwordVerify.verified) {
+      hashClientPassword(client);
+    }
+
     Utils.copyNonNullProperties(client, clientFound.get());
     Client updatedClient = saveClientAddress(clientFound.get());
     return new ServiceResponse("OK", updatedClient);
@@ -65,6 +69,12 @@ public class ClientService implements IClientService {
   @Override
   public void delete(UUID id) {
     clientRepository.deleteById(id);
+  }
+
+  private static void hashClientPassword(Client client) {
+    String passwordHashed = BCrypt.withDefaults()
+        .hashToString(12, client.getPassword().toCharArray());
+    client.setPassword(passwordHashed);
   }
 
   private Client saveClientAddress(Client client) {

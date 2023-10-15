@@ -3,17 +3,22 @@ package com.silmarfnascimento.CEPSystem.security;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.DefaultSecurityFilterChain;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
-public class WebSecurityConfig extends SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity> {
+@EnableGlobalMethodSecurity(prePostEnabled = true)
+public class WebSecurityConfig{
 
   @Bean
   public BCryptPasswordEncoder encoder() {
@@ -30,14 +35,16 @@ public class WebSecurityConfig extends SecurityConfigurerAdapter<DefaultSecurity
       "/webjars/**"
   };
 
-  @Override
-  public void configure(HttpSecurity http) throws Exception {
-    http
+  @Bean
+  public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    return http
+        .cors(cors -> cors.disable())
         .csrf(csrf -> csrf.disable())
         .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-        .addFilterBefore(new JWTFilter(), UsernamePasswordAuthenticationFilter.class)
+        .addFilterAfter(new JWTFilter(), UsernamePasswordAuthenticationFilter.class)
         .authorizeHttpRequests(authorize -> {
               authorize
+                  .requestMatchers(SWAGGER_WHITELIST).permitAll()
                   .requestMatchers("/h2-console/**").permitAll()
                   .requestMatchers(HttpMethod.POST, "/login").permitAll()
                   .requestMatchers(HttpMethod.POST, "/users").permitAll()
@@ -46,6 +53,11 @@ public class WebSecurityConfig extends SecurityConfigurerAdapter<DefaultSecurity
                   .requestMatchers(HttpMethod.DELETE, "/users").hasAnyRole("USERS", "MANAGERS")
                   .anyRequest().authenticated();
             }
-        );
+        ).build();
+  }
+
+  @Bean
+  public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+    return authenticationConfiguration.getAuthenticationManager();
   }
 }

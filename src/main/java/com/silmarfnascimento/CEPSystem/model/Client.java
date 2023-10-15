@@ -23,6 +23,8 @@ public class Client {
 
   private String password;
 
+  private  String roles;
+
   @ManyToOne
   private Address address;
 

@@ -52,7 +52,7 @@ public class JWTFilter extends OncePerRequestFilter {
       }
       filterChain.doFilter(request, response);
     }catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException | SignatureException e) {
-      e.printStackTrace();
+      System.out.println("Error processing JWT: " + e.getMessage());
       response.setStatus(HttpStatus.FORBIDDEN.value());
     }
   }

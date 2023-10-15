@@ -1,5 +1,8 @@
 package com.silmarfnascimento.CEPSystem.security;
 
+import at.favre.lib.crypto.bcrypt.BCrypt;
+import com.silmarfnascimento.CEPSystem.model.Client;
+import com.silmarfnascimento.CEPSystem.repository.IClientRepository;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureException;
@@ -8,6 +11,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -19,6 +23,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class JWTFilter extends OncePerRequestFilter {
+  @Autowired
+  private IClientRepository clientRepository;
   @Override
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
       throws ServletException, IOException {
@@ -27,16 +33,20 @@ public class JWTFilter extends OncePerRequestFilter {
       if(token!=null && !token.isEmpty()) {
         JWTObject tokenUserObject = JWTCreator.create(token,SecurityConfig.PREFIX, SecurityConfig.KEY);
 
+        Client clientFound = clientRepository.findByUsername(tokenUserObject.getUsername());
         List<SimpleGrantedAuthority> authorities = authorities(tokenUserObject.getRoles());
 
-        UsernamePasswordAuthenticationToken userToken =
-            new UsernamePasswordAuthenticationToken(
-                tokenUserObject.getUsername(),
-                tokenUserObject.getPassword(),
-                authorities);
+        var passwordVerify = BCrypt.verifyer().verify(clientFound.getPassword().toCharArray(), tokenUserObject.getPassword());
+        if(passwordVerify.verified) {
+          UsernamePasswordAuthenticationToken userToken =
+              new UsernamePasswordAuthenticationToken(
+                  tokenUserObject.getUsername(),
+                  tokenUserObject.getPassword(),
+                  authorities);
+          SecurityContextHolder.getContext().setAuthentication(userToken);
+        }
 
-        SecurityContextHolder.getContext().setAuthentication(userToken);
-
+        SecurityContextHolder.clearContext();
       }else {
         SecurityContextHolder.clearContext();
       }

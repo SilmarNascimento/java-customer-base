@@ -47,6 +47,20 @@
 			<optional>true</optional>
 		</dependency>
 
+		<!-- Springdoc OpenAPI UI -->
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-ui</artifactId>
+			<version>1.6.3</version> <!-- Use the latest version available -->
+		</dependency>
+
+		<!-- Swagger UI (Webjar) -->
+		<dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>swagger-ui</artifactId>
+			<version>3.48.0</version> <!-- Use the version compatible with Springdoc -->
+		</dependency>
+
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>

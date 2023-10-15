@@ -21,6 +21,8 @@ public class Client {
 
   private String email;
 
+  private String password;
+
   @ManyToOne
   private Address address;
 

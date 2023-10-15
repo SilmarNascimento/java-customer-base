@@ -42,7 +42,7 @@ public class ClientController {
   }
 
   @PutMapping("/{id}")
-  public ResponseEntity<Object> atualizar(@PathVariable UUID id, @RequestBody Client cliente) {
+  public ResponseEntity<Object> update(@PathVariable UUID id, @RequestBody Client cliente) {
     ServiceResponse serviceResponse = clientService.update(id, cliente);
     return ResponseEntity.status(mapHttpStatus(serviceResponse.getStatus())).body(serviceResponse.getData());
   }

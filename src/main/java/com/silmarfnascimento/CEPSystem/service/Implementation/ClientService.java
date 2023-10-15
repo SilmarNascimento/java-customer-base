@@ -26,13 +26,13 @@ public class ClientService implements IClientService {
   @Override
   public ServiceResponse findAll() {
     List<Client> clients = clientRepository.findAll();
-    return new ServiceResponse("SUCCESS", clients);
+    return new ServiceResponse("OK", clients);
   }
 
   @Override
   public ServiceResponse findById(UUID id) {
     Optional<Client> client = clientRepository.findById(id);
-    return new ServiceResponse("SUCCESS", client);
+    return new ServiceResponse("OK", client);
   }
 
   @Override
@@ -47,9 +47,9 @@ public class ClientService implements IClientService {
     if (clientFound.isEmpty()) {
       return new ServiceResponse("NOT_FOUND", "Client not Found");
     }
-    Utils.copyNonNullProperties(client, clientFound);
+    Utils.copyNonNullProperties(client, clientFound.get());
     Client updatedClient = saveClientAddress(clientFound.get());
-    return new ServiceResponse("SUCCESS", updatedClient);
+    return new ServiceResponse("OK", updatedClient);
   }
 
   @Override

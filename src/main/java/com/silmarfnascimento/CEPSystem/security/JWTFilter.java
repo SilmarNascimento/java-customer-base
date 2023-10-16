@@ -32,22 +32,22 @@ public class JWTFilter extends OncePerRequestFilter {
       filterChain.doFilter(request, response);
     } else {
       String token =  request.getHeader(JWTCreator.HEADER_AUTHORIZATION);
-      System.out.println(token);
       try {
         if(token!=null && !token.isEmpty()) {
           JWTObject tokenUserObject = JWTCreator.create(token,SecurityConfig.PREFIX, SecurityConfig.KEY);
-          System.out.println(tokenUserObject.toString());
-
           Client clientFound = clientRepository.findByUsername(tokenUserObject.getUsername());
+
           if(clientFound == null) {
             response.sendError(404, "usuário não encontrado");
             return;
           }
+
           if(clientFound.getPassword().equals(tokenUserObject.getPassword())) {
             request.setAttribute("idUser", clientFound.getId());
             filterChain.doFilter(request, response);
             return;
           }
+
           response.sendError(403, "usuário não autorizado");
         }else {
           response.sendError(403, "Usuário não encontrado");
@@ -59,8 +59,4 @@ public class JWTFilter extends OncePerRequestFilter {
       }
     }
   }
-  /* private List<SimpleGrantedAuthority> authorities(List<String> roles){
-    return roles.stream().map(SimpleGrantedAuthority::new)
-        .collect(Collectors.toList());
-  }*/
 }

@@ -43,7 +43,6 @@ public class ClientService implements IClientService {
       return new ServiceResponse("BAD_REQUEST", "Usuário já existente!");
     }
     hashClientPassword(client);
-
     Client createdClient = saveClientAddress(client);
     return new ServiceResponse("CREATED", createdClient);
   }

@@ -28,9 +28,6 @@ public class LoginService {
     Client clientFound = clientRepository.findByUsername(login.username());
     if(clientFound != null) {
       var passwordVerify = BCrypt.verifyer().verify(login.password().toCharArray(), clientFound.getPassword());
-      System.out.println(clientFound.getPassword());
-      System.out.println(login.password());
-      System.out.println(passwordVerify.verified);
       if (!passwordVerify.verified) {
         return new ServiceResponse("UNAUTHORIZED", "Senha ou login inválidos");
       }

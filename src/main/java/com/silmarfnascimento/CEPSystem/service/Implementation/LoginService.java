@@ -20,15 +20,19 @@ import java.util.Date;
 public class LoginService {
   @Autowired
   private SecurityConfig securityConfig;
+
   @Autowired
   private IClientRepository clientRepository;
 
   public ServiceResponse login(Login login){
     Client clientFound = clientRepository.findByUsername(login.username());
     if(clientFound != null) {
-      var passwordVerify = BCrypt.verifyer().verify(clientFound.getPassword().toCharArray(), login.password());
+      var passwordVerify = BCrypt.verifyer().verify(login.password().toCharArray(), clientFound.getPassword());
+      System.out.println(clientFound.getPassword());
+      System.out.println(login.password());
+      System.out.println(passwordVerify.verified);
       if (!passwordVerify.verified) {
-        return new ServiceResponse("OK", "Senha ou login inválidos");
+        return new ServiceResponse("UNAUTHORIZED", "Senha ou login inválidos");
       }
 
       JWTObject jwtObject = new JWTObject();

@@ -2,21 +2,19 @@ package com.silmarfnascimento.CEPSystem.security;
 
 import io.jsonwebtoken.*;
 
-import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
-
 public class JWTCreator {
   public static final String HEADER_AUTHORIZATION = "Authorization";
-  public static final String ROLES_AUTHORITIES = "authorities";
 
   public static String create(String prefix,String key, JWTObject jwtObject) {
+    System.out.println(jwtObject.toString());
+    System.out.println(prefix);
+    System.out.println(key);
     String token = Jwts.builder()
         .setSubject(jwtObject.getUsername())
         .claim("password",jwtObject.getPassword())
         .setIssuedAt(jwtObject.getCreatedAt())
         .setExpiration(jwtObject.getExpiresAt())
-        .signWith(SignatureAlgorithm.HS512, key)
+        .signWith(SignatureAlgorithm.HS256, key)
         .compact();
     return prefix + " " + token;
   }

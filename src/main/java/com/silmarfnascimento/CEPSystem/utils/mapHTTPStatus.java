@@ -9,6 +9,7 @@ public class mapHTTPStatus {
       case "CREATED" -> HttpStatus.CREATED;
       case "NOT_FOUND" -> HttpStatus.NOT_FOUND;
       case "BAD_REQUEST" -> HttpStatus.BAD_REQUEST;
+      case "UNAUTHORIZED" -> HttpStatus.UNAUTHORIZED;
       default -> HttpStatus.INTERNAL_SERVER_ERROR;
     };
   }

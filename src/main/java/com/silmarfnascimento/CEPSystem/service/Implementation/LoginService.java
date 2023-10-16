@@ -24,15 +24,12 @@ public class LoginService {
   private IClientRepository clientRepository;
 
   public ServiceResponse login(Login login){
-    Client clientFound = clientRepository.findByUsername(login.getUsername());
+    Client clientFound = clientRepository.findByUsername(login.username());
     if(clientFound != null) {
-      var passwordVerify = BCrypt.verifyer().verify(clientFound.getPassword().toCharArray(), login.getPassword());
+      var passwordVerify = BCrypt.verifyer().verify(clientFound.getPassword().toCharArray(), login.password());
       if (!passwordVerify.verified) {
         return new ServiceResponse("OK", "Senha ou login inválidos");
       }
-
-      Session session = new Session();
-      session.setLogin(clientFound.getUsername());
 
       JWTObject jwtObject = new JWTObject();
       jwtObject.setUsername(clientFound.getUsername());
@@ -40,7 +37,9 @@ public class LoginService {
       jwtObject.setCreatedAt(new Date(System.currentTimeMillis()));
       jwtObject.setExpiresAt((new Date(System.currentTimeMillis() + SecurityConfig.EXPIRATION)));
       jwtObject.setRoles(clientFound.getRoles());
-      session.setToken(JWTCreator.create(SecurityConfig.PREFIX, SecurityConfig.KEY, jwtObject));
+
+      Session session = new Session(clientFound.getUsername(), JWTCreator.create(SecurityConfig.PREFIX, SecurityConfig.KEY, jwtObject));
+
       return new ServiceResponse("OK", session);
     }else {
       throw new RuntimeException("Erro ao tentar fazer login");

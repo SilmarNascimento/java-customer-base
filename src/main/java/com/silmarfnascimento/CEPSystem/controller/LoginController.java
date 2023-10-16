@@ -1,7 +1,6 @@
 package com.silmarfnascimento.CEPSystem.controller;
 
 import com.silmarfnascimento.CEPSystem.dto.Login;
-import com.silmarfnascimento.CEPSystem.repository.IClientRepository;
 import com.silmarfnascimento.CEPSystem.service.Implementation.LoginService;
 import com.silmarfnascimento.CEPSystem.service.ServiceResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,19 +10,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Date;
-
 import static com.silmarfnascimento.CEPSystem.utils.mapHTTPStatus.mapHttpStatus;
 
 @RestController
-@RequestMapping("/login")
+@RequestMapping("auth")
 public class LoginController {
   @Autowired
   private LoginService loginService;
-  @Autowired
-  private IClientRepository clientRepository;
 
-  @PostMapping("/login")
+  @PostMapping
   public ResponseEntity<Object> login(@RequestBody Login login){
     ServiceResponse serviceResponse = loginService.login(login);
     if(serviceResponse.getData() != null) {

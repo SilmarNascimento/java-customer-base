@@ -38,7 +38,6 @@ public class ClientService implements IClientService {
 
   @Override
   public ServiceResponse create(Client client) {
-
     Client userFound = this.clientRepository.findByUsername(client.getUsername());
     if (userFound != null) {
       return new ServiceResponse("BAD_REQUEST", "Usuário já existente!");

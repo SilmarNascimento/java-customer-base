@@ -12,13 +12,4 @@ public class JWTObject {
   private String password;
   private Date createdAt;
   private Date expiresAt;
-  private List<String> roles;
-
-  public void setRoles(List<String> roles) {
-    this.roles = roles;
-  }
-
-  public void setRoles(String... roles){
-    this.roles = Arrays.asList(roles);
-  }
 }

@@ -1,4 +1,4 @@
-package com.silmarfnascimento.CEPSystem.security;
+/*package com.silmarfnascimento.CEPSystem.security;
 
 import jakarta.servlet.Servlet;
 import org.h2.server.web.WebServlet;
@@ -39,8 +39,8 @@ public class WebSecurityConfig{
   };
 
   @Bean
-  public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    return http
+  public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+    return httpSecurity
         .cors(cors -> cors.disable())
         .csrf(csrf -> csrf.disable())
         .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -49,25 +49,20 @@ public class WebSecurityConfig{
               authorize
                   .requestMatchers(SWAGGER_WHITELIST).permitAll()
                   .requestMatchers("/h2-console/**").permitAll()
-                  .requestMatchers(HttpMethod.POST, "/login").permitAll()
+                  .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                   .requestMatchers(HttpMethod.POST, "/users").permitAll()
-                  .requestMatchers(HttpMethod.GET, "/users/**").hasAnyRole("USERS", "MANAGERS")
-                  .requestMatchers(HttpMethod.PUT, "/users").hasAnyRole("USERS", "MANAGERS")
-                  .requestMatchers(HttpMethod.DELETE, "/users").hasAnyRole("USERS", "MANAGERS")
+                  .requestMatchers(HttpMethod.GET, "/users/**").hasAnyRole("USERS", "ADMIN")
+                  .requestMatchers(HttpMethod.PUT, "/users").hasAnyRole("USERS", "ADMIN")
+                  .requestMatchers(HttpMethod.DELETE, "/users").hasAnyRole("USERS", "ADMIN")
                   .anyRequest().authenticated();
             }
         )
         .build();
   }
-  /*
+
   @Bean
   public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
     return authenticationConfiguration.getAuthenticationManager();
-  }*/
-  @Bean
-  public ServletRegistrationBean<Servlet> h2servletRegistration() {
-    ServletRegistrationBean<Servlet> registrationBean = new ServletRegistrationBean<>((Servlet) new WebServlet());
-    registrationBean.addUrlMappings("/h2-console/*");
-    return registrationBean;
   }
 }
+*/

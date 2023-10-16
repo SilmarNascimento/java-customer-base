@@ -36,7 +36,6 @@ public class LoginService {
       jwtObject.setPassword(clientFound.getPassword());
       jwtObject.setCreatedAt(new Date(System.currentTimeMillis()));
       jwtObject.setExpiresAt((new Date(System.currentTimeMillis() + SecurityConfig.EXPIRATION)));
-      jwtObject.setRoles(clientFound.getRoles());
 
       Session session = new Session(clientFound.getUsername(), JWTCreator.create(SecurityConfig.PREFIX, SecurityConfig.KEY, jwtObject));
 

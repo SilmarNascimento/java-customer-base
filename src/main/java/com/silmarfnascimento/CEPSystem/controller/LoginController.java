@@ -3,6 +3,7 @@ package com.silmarfnascimento.CEPSystem.controller;
 import com.silmarfnascimento.CEPSystem.dto.Login;
 import com.silmarfnascimento.CEPSystem.service.Implementation.LoginService;
 import com.silmarfnascimento.CEPSystem.service.ServiceResponse;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,7 +20,7 @@ public class LoginController {
   private LoginService loginService;
 
   @PostMapping("/login")
-  public ResponseEntity<Object> login(@RequestBody Login login){
+  public ResponseEntity<Object> login(@RequestBody @Valid Login login){
     ServiceResponse serviceResponse = loginService.login(login);
     if(serviceResponse.getData() != null) {
       return ResponseEntity.status(mapHttpStatus(serviceResponse.getStatus())).body(serviceResponse.getData());

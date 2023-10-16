@@ -3,6 +3,7 @@ package com.silmarfnascimento.CEPSystem.controller;
 import com.silmarfnascimento.CEPSystem.model.Client;
 import com.silmarfnascimento.CEPSystem.service.Implementation.ClientService;
 import com.silmarfnascimento.CEPSystem.service.ServiceResponse;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,7 +37,7 @@ public class ClientController {
   }
 
   @PostMapping
-  public ResponseEntity<Object> create(@RequestBody Client client) {
+  public ResponseEntity<Object> create(@RequestBody @Valid Client client) {
     ServiceResponse serviceResponse = clientService.create(client);
     return ResponseEntity.status(mapHttpStatus(serviceResponse.getStatus())).body(serviceResponse.getData());
   }

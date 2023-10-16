@@ -16,7 +16,6 @@ public class JWTCreator {
         .claim("password",jwtObject.getPassword())
         .setIssuedAt(jwtObject.getCreatedAt())
         .setExpiration(jwtObject.getExpiresAt())
-        .claim(ROLES_AUTHORITIES, checkRoles(jwtObject.getRoles()))
         .signWith(SignatureAlgorithm.HS512, key)
         .compact();
     return prefix + " " + token;
@@ -32,11 +31,7 @@ public class JWTCreator {
     object.setPassword(claims.get("password", String.class));
     object.setExpiresAt(claims.getExpiration());
     object.setCreatedAt(claims.getIssuedAt());
-    object.setRoles(claims.get(ROLES_AUTHORITIES, List.class));
     return object;
 
-  }
-  private static List<String> checkRoles(List<String> roles) {
-    return roles.stream().map(s -> "ROLE_".concat(s.replaceAll("ROLE_",""))).collect(Collectors.toList());
   }
 }
